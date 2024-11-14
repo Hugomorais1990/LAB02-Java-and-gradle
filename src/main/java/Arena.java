@@ -137,8 +137,11 @@ public class Arena {
     private void verifyMonsterCollisions() {
         for (Monster monster : monsters) {
             if (monster.getPosition().equals(hero.getPosition())) {
-                System.out.println("O herói foi apanhado por um monstro! Fim do jogo.");
-                System.exit(0); // Encerra o jogo
+                hero.loseEnergy(); // Reduz a energia do herói
+                if (hero.getEnergy() == 0) {
+                    System.out.println("O herói perdeu toda a energia! Fim do jogo.");
+                    System.exit(0); // Encerra o jogo
+                }
             }
         }
     }
