@@ -13,7 +13,7 @@ public class Wall {
     }
 
     public void draw(TextGraphics graphics) {
-        graphics.setForegroundColor(TextColor.Factory.fromString("#FFFFFF")); // Cor branca
+        graphics.setForegroundColor(TextColor.Factory.fromString("#FF5722")); // Cor branca
         graphics.putString(position.getX(), position.getY(), "#"); // Representação da parede
     }
 }
