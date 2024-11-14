@@ -59,19 +59,14 @@ public class Arena {
     }
 
     private boolean canHeroMove(Position position) {
-        // Verifica se está dentro dos limites da arena
-        if (position.getX() < 0 || position.getX() >= width ||
-                position.getY() < 0 || position.getY() >= height) {
-            return false;
-        }
-
-        // Verifica se colide com alguma parede
+        // Verifica se colide com alguma parede usando equals()
         for (Wall wall : walls) {
             if (wall.getPosition().equals(position)) {
                 return false;
             }
         }
 
+        // Retorna verdadeiro se não houver colisão com as paredes
         return true;
     }
 
