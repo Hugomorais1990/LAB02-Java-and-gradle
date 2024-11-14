@@ -24,10 +24,11 @@ public class Game {
 
     private void draw() throws IOException {
         screen.clear();
-        TextGraphics graphics = screen.newTextGraphics();
-        arena.draw(graphics);
+        TextGraphics graphics = screen.newTextGraphics(); // Cria TextGraphics para desenhar
+        arena.draw(graphics); // Arena gere o desenho do fundo, paredes e herói
         screen.refresh();
     }
+
 
     public void run() {
         try {

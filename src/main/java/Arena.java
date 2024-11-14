@@ -4,15 +4,38 @@ import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Arena {
     private int width;
     private int height;
     private Hero hero;
+    private List<Wall> walls;
 
     public Arena(int width, int height) {
         this.width = width;
         this.height = height;
-        this.hero = new Hero(10, 10); // Inicializa o herói na posição (10,10)
+        this.hero = new Hero(10, 10); // Inicializa o herói
+        this.walls = createWalls(); // Cria as paredes ao redor da arena
+    }
+
+    private List<Wall> createWalls() {
+        List<Wall> walls = new ArrayList<>();
+
+        // Paredes horizontais
+        for (int x = 0; x < width; x++) {
+            walls.add(new Wall(x, 0)); // Parede superior
+            walls.add(new Wall(x, height - 1)); // Parede inferior
+        }
+
+        // Paredes verticais
+        for (int y = 1; y < height - 1; y++) {
+            walls.add(new Wall(0, y)); // Parede esquerda
+            walls.add(new Wall(width - 1, y)); // Parede direita
+        }
+
+        return walls;
     }
 
     public void processKey(KeyStroke key) {
@@ -36,8 +59,20 @@ public class Arena {
     }
 
     private boolean canHeroMove(Position position) {
-        return position.getX() >= 0 && position.getX() < width &&
-                position.getY() >= 0 && position.getY() < height;
+        // Verifica se está dentro dos limites da arena
+        if (position.getX() < 0 || position.getX() >= width ||
+                position.getY() < 0 || position.getY() >= height) {
+            return false;
+        }
+
+        // Verifica se colide com alguma parede
+        for (Wall wall : walls) {
+            if (wall.getPosition().equals(position)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public void draw(TextGraphics graphics) {
@@ -48,6 +83,11 @@ public class Arena {
                 new TerminalSize(width, height),
                 ' ' // Preenche com espaços
         );
+
+        // Desenha as paredes
+        for (Wall wall : walls) {
+            wall.draw(graphics);
+        }
 
         // Desenha o herói
         hero.draw(graphics);
