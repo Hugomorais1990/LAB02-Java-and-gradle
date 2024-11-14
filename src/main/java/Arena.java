@@ -3,6 +3,7 @@ import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,12 +80,19 @@ public class Arena {
     }
 
     public void processKey(KeyStroke key) {
-        Position newPosition;
+        Position newPosition = null; // Inicializa newPosition como null
         switch (key.getKeyType()) {
             case ArrowUp -> newPosition = hero.moveUp();
             case ArrowDown -> newPosition = hero.moveDown();
             case ArrowLeft -> newPosition = hero.moveLeft();
             case ArrowRight -> newPosition = hero.moveRight();
+            case Character -> {
+                // Reinicia o jogo ao pressionar 'R' (ignorando maiúsculas/minúsculas)
+                if (key.getCharacter() != null && key.getCharacter().toString().equalsIgnoreCase("r")) {
+                    restartGame();
+                    return; // Sai do método após reiniciar
+                }
+            }
             default -> {
                 return; // Ignora outras teclas
             }
@@ -94,6 +102,20 @@ public class Arena {
         verifyMonsterCollisions(); // Verifica colisões entre o herói e os monstros
     }
 
+    private void restartGame() {
+        System.out.println("Reiniciando o jogo...");
+
+        // Redefine o herói na posição inicial
+        this.hero = new Hero(10, 10);
+
+        // Recria as moedas
+        this.coins = createCoins();
+
+        // Recria os monstros
+        this.monsters = createMonsters();
+
+        // Opcional: Se necessário, pode redefinir outras variáveis do jogo
+    }
     private void moveHero(Position position) {
         if (canHeroMove(position)) {
             hero.setPosition(position);
