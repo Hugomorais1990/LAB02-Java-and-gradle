@@ -3,10 +3,12 @@ import com.googlecode.lanterna.graphics.TextGraphics;
 
 public class Hero extends Element {
     private int energy; // Adiciona o atributo energia
+    private int score;
 
     public Hero(int x, int y) {
         super(x, y); // Chama o construtor da superclasse
         this.energy = 5; // Inicializa com energia máxima
+        this.score = 0; // Inicializa a pontuação
     }
 
     public int getEnergy() {
@@ -17,6 +19,14 @@ public class Hero extends Element {
         if (energy > 0) {
             energy--;
         }
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void addScore(int points) {
+        score += points;
     }
 
     @Override

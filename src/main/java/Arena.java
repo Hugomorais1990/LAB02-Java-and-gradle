@@ -30,12 +30,12 @@ public class Arena {
 
         // Paredes horizontais
         for (int x = 0; x < width; x++) {
-            walls.add(new Wall(x, 0)); // Parede superior
+            walls.add(new Wall(x, 1)); // Parede superior (ajuste para linha 1)
             walls.add(new Wall(x, height - 1)); // Parede inferior
         }
 
         // Paredes verticais
-        for (int y = 1; y < height - 1; y++) {
+        for (int y = 2; y < height - 1; y++) {
             walls.add(new Wall(0, y)); // Parede esquerda
             walls.add(new Wall(width - 1, y)); // Parede direita
         }
@@ -50,7 +50,7 @@ public class Arena {
         // Gera 5 moedas em posições aleatórias dentro da arena
         for (int i = 0; i < 5; i++) {
             int x = random.nextInt(width - 2) + 1; // Evita bordas
-            int y = random.nextInt(height - 2) + 1; // Evita bordas
+            int y = random.nextInt(height - 3) + 2; // Evita a linha do cabeçalho
             coins.add(new Coin(x, y));
         }
 
@@ -64,7 +64,7 @@ public class Arena {
         // Gera 3 monstros em posições aleatórias dentro da arena
         for (int i = 0; i < 3; i++) {
             int x = random.nextInt(width - 2) + 1; // Evita bordas
-            int y = random.nextInt(height - 2) + 1; // Evita bordas
+            int y = random.nextInt(height - 3) + 2; // Evita a linha do cabeçalho
             monsters.add(new Monster(x, y));
         }
 
@@ -110,6 +110,7 @@ public class Arena {
         for (int i = 0; i < coins.size(); i++) {
             if (coins.get(i).getPosition().equals(hero.getPosition())) {
                 coins.remove(i); // Remove a moeda da lista
+                hero.addScore(10); // Adiciona 10 pontos
                 break; // Sai do loop, pois só pode coletar uma moeda por movimento
             }
         }
@@ -154,6 +155,10 @@ public class Arena {
                 new TerminalSize(width, height),
                 ' ' // Preenche com espaços
         );
+
+        // Mostra informações de energia e pontuação
+        graphics.setForegroundColor(TextColor.Factory.fromString("#FFFFFF")); // Cor branca para o texto
+        graphics.putString(1, 0, "Energia: " + hero.getEnergy() + " | Pontuação: " + hero.getScore());
 
         // Desenha as paredes
         for (Element wall : walls) {
