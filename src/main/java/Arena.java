@@ -6,18 +6,21 @@ import com.googlecode.lanterna.input.KeyStroke;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Arena {
     private int width;
     private int height;
     private Hero hero;
-    private List<Element> walls; // Lista de elementos que representam paredes
+    private List<Element> walls; // Paredes da arena
+    private List<Coin> coins; // Moedas na arena
 
     public Arena(int width, int height) {
         this.width = width;
         this.height = height;
         this.hero = new Hero(10, 10); // Inicializa o herói
         this.walls = createWalls(); // Cria as paredes ao redor da arena
+        this.coins = createCoins(); // Cria moedas aleatoriamente na arena
     }
 
     private List<Element> createWalls() {
@@ -38,6 +41,20 @@ public class Arena {
         return walls;
     }
 
+    private List<Coin> createCoins() {
+        List<Coin> coins = new ArrayList<>();
+        Random random = new Random();
+
+        // Gera 5 moedas em posições aleatórias dentro da arena
+        for (int i = 0; i < 5; i++) {
+            int x = random.nextInt(width - 2) + 1; // Evita bordas
+            int y = random.nextInt(height - 2) + 1; // Evita bordas
+            coins.add(new Coin(x, y));
+        }
+
+        return coins;
+    }
+
     public void processKey(KeyStroke key) {
         Position newPosition;
         switch (key.getKeyType()) {
@@ -55,11 +72,12 @@ public class Arena {
     private void moveHero(Position position) {
         if (canHeroMove(position)) {
             hero.setPosition(position);
+            retrieveCoins(); // Verifica se o herói coleta uma moeda
         }
     }
 
     private boolean canHeroMove(Position position) {
-        // Verifica se colide com alguma parede usando equals()
+        // Verifica se colide com alguma parede
         for (Element wall : walls) {
             if (wall.getPosition().equals(position)) {
                 return false;
@@ -67,6 +85,16 @@ public class Arena {
         }
 
         return true;
+    }
+
+    private void retrieveCoins() {
+        // Verifica se o herói está na mesma posição de uma moeda
+        for (int i = 0; i < coins.size(); i++) {
+            if (coins.get(i).getPosition().equals(hero.getPosition())) {
+                coins.remove(i); // Remove a moeda da lista
+                break; // Sai do loop, pois só pode coletar uma moeda por movimento
+            }
+        }
     }
 
     public void draw(TextGraphics graphics) {
@@ -81,6 +109,11 @@ public class Arena {
         // Desenha as paredes
         for (Element wall : walls) {
             wall.draw(graphics);
+        }
+
+        // Desenha as moedas
+        for (Coin coin : coins) {
+            coin.draw(graphics);
         }
 
         // Desenha o herói
