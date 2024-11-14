@@ -61,11 +61,18 @@ public class Arena {
         List<Monster> monsters = new ArrayList<>();
         Random random = new Random();
 
-        // Gera 3 monstros em posições aleatórias dentro da arena
-        for (int i = 0; i < 3; i++) {
-            int x = random.nextInt(width - 2) + 1; // Evita bordas
-            int y = random.nextInt(height - 3) + 2; // Evita a linha do cabeçalho
+        // Gera monstros normais
+        for (int i = 0; i < 2; i++) { // Dois monstros normais
+            int x = random.nextInt(width - 2) + 1;
+            int y = random.nextInt(height - 3) + 2;
             monsters.add(new Monster(x, y));
+        }
+
+        // Gera SmartMonsters
+        for (int i = 0; i < 1; i++) { // Um SmartMonster
+            int x = random.nextInt(width - 2) + 1;
+            int y = random.nextInt(height - 3) + 2;
+            monsters.add(new SmartMonster(x, y));
         }
 
         return monsters;
@@ -118,12 +125,21 @@ public class Arena {
 
     private void moveMonsters() {
         for (Monster monster : monsters) {
-            Position newPosition = monster.move();
+            Position newPosition;
+            if (monster instanceof SmartMonster) {
+                // Movimento do SmartMonster
+                newPosition = ((SmartMonster) monster).moveTowards(hero.getPosition());
+            } else {
+                // Movimento do monstro normal
+                newPosition = monster.move();
+            }
+
             if (canMonsterMove(newPosition)) {
                 monster.setPosition(newPosition);
             }
         }
     }
+
 
     private boolean canMonsterMove(Position position) {
         // Verifica se o monstro colide com alguma parede
