@@ -1,19 +1,15 @@
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 
-public class Wall {
-    private Position position;
+public class Wall extends Element {
 
     public Wall(int x, int y) {
-        this.position = new Position(x, y);
+        super(x, y); // Chama o construtor da superclasse
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
+    @Override
     public void draw(TextGraphics graphics) {
-        graphics.setForegroundColor(TextColor.Factory.fromString("#FF5722")); // Cor branca
-        graphics.putString(position.getX(), position.getY(), "#"); // Representação da parede
+        graphics.setForegroundColor(TextColor.Factory.fromString("#FFF256")); // Cor branca
+        graphics.putString(getPosition().getX(), getPosition().getY(), "#"); // Representação da parede
     }
 }

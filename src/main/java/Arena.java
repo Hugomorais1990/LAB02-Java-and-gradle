@@ -11,7 +11,7 @@ public class Arena {
     private int width;
     private int height;
     private Hero hero;
-    private List<Wall> walls;
+    private List<Element> walls; // Lista de elementos que representam paredes
 
     public Arena(int width, int height) {
         this.width = width;
@@ -20,8 +20,8 @@ public class Arena {
         this.walls = createWalls(); // Cria as paredes ao redor da arena
     }
 
-    private List<Wall> createWalls() {
-        List<Wall> walls = new ArrayList<>();
+    private List<Element> createWalls() {
+        List<Element> walls = new ArrayList<>();
 
         // Paredes horizontais
         for (int x = 0; x < width; x++) {
@@ -60,13 +60,12 @@ public class Arena {
 
     private boolean canHeroMove(Position position) {
         // Verifica se colide com alguma parede usando equals()
-        for (Wall wall : walls) {
+        for (Element wall : walls) {
             if (wall.getPosition().equals(position)) {
                 return false;
             }
         }
 
-        // Retorna verdadeiro se não houver colisão com as paredes
         return true;
     }
 
@@ -80,7 +79,7 @@ public class Arena {
         );
 
         // Desenha as paredes
-        for (Wall wall : walls) {
+        for (Element wall : walls) {
             wall.draw(graphics);
         }
 

@@ -1,39 +1,31 @@
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 
-public class Hero {
-    private Position position;
+public class Hero extends Element {
 
     public Hero(int x, int y) {
-        this.position = new Position(x, y);
+        super(x, y); // Chama o construtor da superclasse
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
+    @Override
+    public void draw(TextGraphics graphics) {
+        graphics.setForegroundColor(TextColor.Factory.fromString("#FFF400")); // Cor amarela
+        graphics.putString(getPosition().getX(), getPosition().getY(), "X"); // Desenha o herói na posição atual
     }
 
     public Position moveUp() {
-        return new Position(position.getX(), position.getY() - 1);
+        return new Position(getPosition().getX(), getPosition().getY() - 1);
     }
 
     public Position moveDown() {
-        return new Position(position.getX(), position.getY() + 1);
+        return new Position(getPosition().getX(), getPosition().getY() + 1);
     }
 
     public Position moveLeft() {
-        return new Position(position.getX() - 1, position.getY());
+        return new Position(getPosition().getX() - 1, getPosition().getY());
     }
 
     public Position moveRight() {
-        return new Position(position.getX() + 1, position.getY());
-    }
-
-    public void draw(TextGraphics graphics) {
-        graphics.setForegroundColor(TextColor.Factory.fromString("#FFFF00")); // Cor amarela
-        graphics.putString(position.getX(), position.getY(), "X"); // Desenha o herói na posição atual
+        return new Position(getPosition().getX() + 1, getPosition().getY());
     }
 }
