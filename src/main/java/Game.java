@@ -1,57 +1,73 @@
 import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
+import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
 
 public class Game {
-    private final TerminalScreen screen;
-    private int x;
-    private int y;
-    private final Hero hero;
-    public Game(int  width, int height) throws IOException {
-        Terminal terminal = new DefaultTerminalFactory().setInitialTerminalSize(new TerminalSize(width, height)).createTerminal();
+    private Screen screen;
+    private Hero hero;
+
+    public Game() throws IOException {
+        TerminalSize terminalSize = new TerminalSize(40, 20);
+        var terminal = new DefaultTerminalFactory().setInitialTerminalSize(terminalSize).createTerminal();
         screen = new TerminalScreen(terminal);
+        screen.setCursorPosition(null);
+        screen.startScreen();
+        screen.doResizeIfNecessary();
+
         hero = new Hero(10, 10);
-        screen.setCursorPosition(null);   // we don't need a cursor
-        screen.startScreen();             // screens must be started
-        screen.doResizeIfNecessary();     // resize screen if necessary
     }
+
     private void draw() throws IOException {
         screen.clear();
         hero.draw(screen);
         screen.refresh();
     }
-    public void run() throws IOException {
-        while (true) {
-            draw();
-            KeyStroke key = screen.readInput();
-            if (key.getKeyType() == KeyType.Character && key.getCharacter() == 'q')
-                screen.close();
-            if (key.getKeyType() == KeyType.EOF)
-                break;
-            processKey(key);
+
+    public void run() {
+        try {
+            while (true) {
+                draw();
+                KeyStroke key = screen.readInput();
+                processKey(key);
+
+                if (key.getKeyType().toString().equalsIgnoreCase("q")) {
+                    screen.close();
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
     private void processKey(KeyStroke key) {
-        System.out.println(key);
-        String keyT = key.getKeyType().toString();
-        switch (keyT) {
-            case "ArrowUp":
-                hero.moveUp();
+        Position newPosition;
+        switch (key.getKeyType()) {
+            case ArrowUp:
+                newPosition = hero.moveUp();
                 break;
-            case "ArrowDown":
-                hero.moveDown();
+            case ArrowDown:
+                newPosition = hero.moveDown();
                 break;
-            case "ArrowLeft":
-                hero.moveLeft();
+            case ArrowLeft:
+                newPosition = hero.moveLeft();
                 break;
-            case "ArrowRight":
-                hero.moveRight();
+            case ArrowRight:
+                newPosition = hero.moveRight();
                 break;
+            default:
+                return; // Nenhuma ação para outras teclas
         }
+        moveHero(newPosition);
+    }
+
+
+    private void moveHero(Position position) {
+        hero.setPosition(position);
     }
 }
