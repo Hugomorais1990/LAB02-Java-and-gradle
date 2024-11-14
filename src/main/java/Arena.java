@@ -14,13 +14,15 @@ public class Arena {
     private Hero hero;
     private List<Element> walls; // Paredes da arena
     private List<Coin> coins; // Moedas na arena
+    private List<Monster> monsters; // Monstros na arena
 
     public Arena(int width, int height) {
         this.width = width;
         this.height = height;
         this.hero = new Hero(10, 10); // Inicializa o herói
         this.walls = createWalls(); // Cria as paredes ao redor da arena
-        this.coins = createCoins(); // Cria moedas aleatoriamente na arena
+        this.coins = createCoins(); // Cria moedas aleatórias
+        this.monsters = createMonsters(); // Cria monstros aleatórios
     }
 
     private List<Element> createWalls() {
@@ -55,6 +57,20 @@ public class Arena {
         return coins;
     }
 
+    private List<Monster> createMonsters() {
+        List<Monster> monsters = new ArrayList<>();
+        Random random = new Random();
+
+        // Gera 3 monstros em posições aleatórias dentro da arena
+        for (int i = 0; i < 3; i++) {
+            int x = random.nextInt(width - 2) + 1; // Evita bordas
+            int y = random.nextInt(height - 2) + 1; // Evita bordas
+            monsters.add(new Monster(x, y));
+        }
+
+        return monsters;
+    }
+
     public void processKey(KeyStroke key) {
         Position newPosition;
         switch (key.getKeyType()) {
@@ -67,6 +83,8 @@ public class Arena {
             }
         }
         moveHero(newPosition);
+        moveMonsters(); // Move os monstros após o movimento do herói
+        verifyMonsterCollisions(); // Verifica colisões entre o herói e os monstros
     }
 
     private void moveHero(Position position) {
@@ -97,6 +115,34 @@ public class Arena {
         }
     }
 
+    private void moveMonsters() {
+        for (Monster monster : monsters) {
+            Position newPosition = monster.move();
+            if (canMonsterMove(newPosition)) {
+                monster.setPosition(newPosition);
+            }
+        }
+    }
+
+    private boolean canMonsterMove(Position position) {
+        // Verifica se o monstro colide com alguma parede
+        for (Element wall : walls) {
+            if (wall.getPosition().equals(position)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void verifyMonsterCollisions() {
+        for (Monster monster : monsters) {
+            if (monster.getPosition().equals(hero.getPosition())) {
+                System.out.println("O herói foi apanhado por um monstro! Fim do jogo.");
+                System.exit(0); // Encerra o jogo
+            }
+        }
+    }
+
     public void draw(TextGraphics graphics) {
         // Configura o fundo da arena
         graphics.setBackgroundColor(TextColor.Factory.fromString("#336699")); // Azul escuro
@@ -114,6 +160,11 @@ public class Arena {
         // Desenha as moedas
         for (Coin coin : coins) {
             coin.draw(graphics);
+        }
+
+        // Desenha os monstros
+        for (Monster monster : monsters) {
+            monster.draw(graphics);
         }
 
         // Desenha o herói
