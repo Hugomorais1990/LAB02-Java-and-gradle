@@ -1,5 +1,4 @@
-import com.googlecode.lanterna.TextCharacter;
-import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 
 public class Hero {
@@ -34,6 +33,7 @@ public class Hero {
     }
 
     public void draw(TextGraphics graphics) {
+        graphics.setForegroundColor(TextColor.Factory.fromString("#FFFF00")); // Cor amarela
         graphics.putString(position.getX(), position.getY(), "X"); // Desenha o herói na posição atual
     }
 }

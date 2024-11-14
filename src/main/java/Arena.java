@@ -1,5 +1,8 @@
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.graphics.TextGraphics;
+import com.googlecode.lanterna.input.KeyStroke;
 
 public class Arena {
     private int width;
@@ -9,10 +12,10 @@ public class Arena {
     public Arena(int width, int height) {
         this.width = width;
         this.height = height;
-        this.hero = new Hero(10, 10);
+        this.hero = new Hero(10, 10); // Inicializa o herói na posição (10,10)
     }
 
-    public void processKey(com.googlecode.lanterna.input.KeyStroke key) {
+    public void processKey(KeyStroke key) {
         Position newPosition;
         switch (key.getKeyType()) {
             case ArrowUp -> newPosition = hero.moveUp();
@@ -20,7 +23,7 @@ public class Arena {
             case ArrowLeft -> newPosition = hero.moveLeft();
             case ArrowRight -> newPosition = hero.moveRight();
             default -> {
-                return;
+                return; // Ignora outras teclas
             }
         }
         moveHero(newPosition);
@@ -39,11 +42,11 @@ public class Arena {
 
     public void draw(TextGraphics graphics) {
         // Configura o fundo da arena
-        graphics.setBackgroundColor(com.googlecode.lanterna.TextColor.Factory.fromString("#336699"));
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#336699")); // Azul escuro
         graphics.fillRectangle(
-                new com.googlecode.lanterna.TerminalPosition(0, 0),
-                new com.googlecode.lanterna.TerminalSize(width, height),
-                ' '
+                new TerminalPosition(0, 0),
+                new TerminalSize(width, height),
+                ' ' // Preenche com espaços
         );
 
         // Desenha o herói
