@@ -1,5 +1,5 @@
 import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextCharacter;
+import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class Game {
     private Screen screen;
-    private Hero hero;
+    private Arena arena;
 
     public Game() throws IOException {
         TerminalSize terminalSize = new TerminalSize(40, 20);
@@ -19,12 +19,13 @@ public class Game {
         screen.startScreen();
         screen.doResizeIfNecessary();
 
-        hero = new Hero(10, 10);
+        arena = new Arena(40, 20); // Inicializa a arena
     }
 
     private void draw() throws IOException {
         screen.clear();
-        hero.draw(screen);
+        TextGraphics graphics = screen.newTextGraphics();
+        arena.draw(graphics);
         screen.refresh();
     }
 
@@ -33,7 +34,7 @@ public class Game {
             while (true) {
                 draw();
                 KeyStroke key = screen.readInput();
-                processKey(key);
+                arena.processKey(key);
 
                 if (key.getKeyType().toString().equalsIgnoreCase("q")) {
                     screen.close();
@@ -43,31 +44,5 @@ public class Game {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void processKey(KeyStroke key) {
-        Position newPosition;
-        switch (key.getKeyType()) {
-            case ArrowUp:
-                newPosition = hero.moveUp();
-                break;
-            case ArrowDown:
-                newPosition = hero.moveDown();
-                break;
-            case ArrowLeft:
-                newPosition = hero.moveLeft();
-                break;
-            case ArrowRight:
-                newPosition = hero.moveRight();
-                break;
-            default:
-                return; // Nenhuma ação para outras teclas
-        }
-        moveHero(newPosition);
-    }
-
-
-    private void moveHero(Position position) {
-        hero.setPosition(position);
     }
 }
